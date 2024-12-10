@@ -84,11 +84,11 @@ class LogGenerator:
         """
         if device.unit == 'В':
             voltage = 50.0
-            dispersion = 1.0
+            dispersion = 0.0
             return voltage + 2 * (random() - 0.5) * dispersion
 
         if device.unit == 'А':
-            amperage = 5 + 4.95 * math.sin(2 * math.pi * (moment - self.start_time).total_seconds() / self.measurements_duration)
+            amperage = 5 + 4.95 * math.cos(3 * math.pi * (moment - self.start_time).total_seconds() / self.measurements_duration)
             if device.range_start <= amperage <= device.range_stop:
                 return amperage #  dispersion = 0.0
             else:  # Добавим ошибку измерения
@@ -98,5 +98,4 @@ class LogGenerator:
                     if (0.0 <= value < device.range_start) or (device.range_stop < value <= 10.0):
                         break
                 return value
-
 

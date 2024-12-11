@@ -88,15 +88,15 @@ class LogGenerator:
         :param moment: Момент измерения
         :return: Результат псевдо-измерения
         """
-        if device.unit == 'В':
-            voltage = 50.0
-            dispersion = 0.0
+        if device.unit == 'В':  # Вычисляем действительное значение:
+            voltage = 55.0 + 20 * math.cos(10 * math.pi * (moment - self.start_time).total_seconds() / self.measurements_duration)
+            dispersion = 2  # задаём дисперсию и вносим ошибку измерения в результат:
             return voltage + 2 * (random() - 0.5) * dispersion
 
-        if device.unit == 'А':
+        if device.unit == 'А':  # Вычисляем действительное значение:
             amperage = 5 + 4.95 * math.cos(3 * math.pi * (moment - self.start_time).total_seconds() / self.measurements_duration)
             if device.range_start <= amperage <= device.range_stop:  # Если ампераж входит в доверительный диапазон амперметра
-                return amperage  # то возвращаем точное значение
+                return amperage  # то возвращаем действительное значение
             else:  # иначе вносим ошибку измерения
                 dispersion = math.fabs(amperage - (device.range_stop + device.range_start) / 2) / 10
                 # Чем сильнее ампераж отлчается от срединного значения диапазона, больше дисперсия

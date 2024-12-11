@@ -15,10 +15,9 @@ ___
 
     python main.py <cfg_file> <log_file>
 
-Если запустить скрипт без параметров:
+Если запустить скрипт без параметров, то в качестве файлов конфигурации и журнала будут подгружены 
+сгенерированные для тестов файлы [log_viewer.cfg](src/resourses/log_viewer.cfg) и 
+[log_viewer.log](src/resourses/log_viewer.log) соответственно:
 
     python main.py
 
-То в качестве файлов конфигурации и журнала будут подгружены 
-сгенерированные для тестов файлы [log_viewer.cfg](src/resourses/log_viewer.cfg) и 
-[log_viewer.log](src/resourses/log_viewer.log) соответственно

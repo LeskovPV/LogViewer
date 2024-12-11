@@ -14,7 +14,8 @@ class LogLoader:
 
     def load(self,
              cfg_file: str = CFG_FILE,
-             log_file: str = LOG_FILE):
+             log_file: str = LOG_FILE,
+             **kwargs):
         """
         Загрузка журнала [и отображение его графике]
         :param cfg_file: Конфиг-файл с описанием устройств

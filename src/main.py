@@ -4,10 +4,10 @@ import sys
 
 
 from tools.log_loader import LogLoader
-from tools.log_generator import LogGenerator
+# from tools.log_generator import LogGenerator
 
 if __name__ == "__main__":
-    LogGenerator().generate()
+    # LogGenerator().generate()
     load_kwargs = dict()
     position = 0  # Счётчик позиций аргументов командной строки
     for arg in sys.argv:

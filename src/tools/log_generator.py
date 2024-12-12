@@ -62,6 +62,7 @@ class LogGenerator:
                     file.write(f'{device.ip_addr}\t{device.range_start}\t{device.range_stop}\t{device.unit}\n')
         except Exception as exception:
             print(exception)
+            return
 
         journal = dict()  # Журнал {time: (ip_addr, value)}
         for device in devices: # Последовательно (для каждого устройства) генерируем значения и пишем в журнал
@@ -75,6 +76,7 @@ class LogGenerator:
                     file.write('{}\t{}\t{}\n'.format(value[0], key.strftime('%Y.%m.%d %H:%M:%S.%f')[:-3], value[1]))
         except Exception as exception:
             print(exception)
+            return
 
         print(f'Генерация тестовых данных окончена. Кол-во устройств: {len(devices)}. Кол-во записей в журнале: {len(journal)}.')
 

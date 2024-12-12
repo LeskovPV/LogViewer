@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from datetime import datetime
+from os import path
 
 from matplotlib import pyplot as plt
 from matplotlib import dates as mpl_dates
@@ -9,10 +10,10 @@ from resourses.dirs import CFG_FILE, LOG_FILE
 from tools.structures import Device, Record
 
 
-class LogLoader:
+class LogViewer:
     """Загрузчик журнала"""
 
-    def load(self,
+    def view(self,
              cfg_file: str = CFG_FILE,
              log_file: str = LOG_FILE,
              **kwargs):
@@ -38,6 +39,7 @@ class LogLoader:
                         voltmeter_range = (float(device.range_start), float(device.range_stop))
         except Exception as exception:
             print(exception)
+            return
 
         power = dict()  # Результирующий справочник со значениями мощности (ключ - время, значение - мощность)
         voltage = dict()  # Результирующий справочник со значениями напряжения (ключ - время, значение - напряжение)
@@ -70,6 +72,7 @@ class LogLoader:
                         voltage[record.moment] = voltage_value
         except Exception as exception:
             print(exception)
+            return
 
 
         plt.figure().canvas.manager.set_window_title('Обозреватель журнала')  # Заголовок окна

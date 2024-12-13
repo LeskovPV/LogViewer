@@ -1,8 +1,6 @@
 # coding=utf-8
 
 from datetime import datetime
-from os import path
-
 from matplotlib import pyplot as plt
 from matplotlib import dates as mpl_dates
 from matplotlib import colors
@@ -11,19 +9,20 @@ from tools.structures import Device, Record
 
 
 class LogViewer:
-    """Загрузчик журнала"""
+    """Обозреватель журнала"""
 
     def view(self,
              cfg_file: str = CFG_FILE,
              log_file: str = LOG_FILE,
              **kwargs):
         """
-        Загрузка журнала [и отображение его графике]
+        Загрузить и отобразить журнал
         :param cfg_file: Конфиг-файл с описанием устройств
         :param log_file: Лог-файл, содержащий записи журнала
         :return:
         """
 
+        ### Загрузка ###
         devices = list()  # Полный список устройств (из cfg-файла)
         ammeters_ranges = dict()  # Диапазоны измерений амперметров
         voltmeter_range = tuple()  # Диапазоны измерений вольтметра
@@ -46,27 +45,28 @@ class LogViewer:
         amperage = dict()  # Результирующий справочник со значениями силы тока (ключ - время, значение - сила тока)
         ammeter_amperage = dict()  # Cправочник амперметров (ключ - адрес устройства, значение - справочник со значениями силы тока (см.выше) )
         voltage_value = None  # Изначально, вольтаж неизвестем
+        start_date: str = None  # Дата первой записи журнала, строка
         try:
             with open(log_file, 'r') as file:  # Читаем журнал из log-файла
                 while line := file.readline():
                     record = Record(*line[:-1].split('\t'))
                     record.value = float(record.value)
                     record.moment = datetime.strptime(record.moment, '%Y.%m.%d %H:%M:%S.%f')
-                    if record.ip_addr in ammeters_ranges:  # читаем ампераж, если адрес амперметра
-                        if voltage_value is None:  # Если вольтаж еще не определён
-                            continue  # переходим к следующей записи журнала
+                    if start_date is None:
+                        start_date = record.moment.strftime('%d.%m.%Y')
+                    if record.ip_addr in ammeters_ranges.keys():  # читаем ампераж, если адрес среди амперметров
                         ammeter_range_start, ammeter_range_stop = ammeters_ranges[record.ip_addr]
                         if ammeter_range_start <= record.value <= ammeter_range_stop:  # Если значение попадает в изм.диапазон
                             amperage[record.moment] = record.value
-                            power[record.moment] = voltage_value * record.value
+                            if voltage_value is not None:  # Если вольтаж уже считан
+                                power[record.moment] = voltage_value * record.value  # Определяем мощность
                         else:
                             pass  # Пропускаем запись амперметра, когда его значение лежит вне диапазона
                         if record.ip_addr not in ammeter_amperage.keys():
-                            ammeter_amperage[record.ip_addr] = dict()
+                            ammeter_amperage[record.ip_addr] = dict()  # Пополняем справочник амперметров
                         ammeter_amperage[record.ip_addr][record.moment] = record.value
                     else:  # иначе, читаем вольтаж
                         if voltage_value is None:  # Если вольтаж еще не определён
-                            plot_title = record.moment.strftime('%d.%m.%Y')
                             voltage_addr = record.ip_addr
                         voltage_value = record.value
                         voltage[record.moment] = voltage_value
@@ -74,9 +74,9 @@ class LogViewer:
             print(exception)
             return
 
-
+        ### Отображение ###
         plt.figure().canvas.manager.set_window_title('Обозреватель журнала')  # Заголовок окна
-        plt.suptitle('Измерения от {}'.format(plot_title), fontweight='bold')  # Название графика
+        plt.suptitle('Измерения от {}'.format(start_date), fontweight='bold')  # Название графика
 
         plt.subplot(3, 1, 1)  # указываем 2 строки, 1 столбец, выбираем первое место
         plt.title('Журнал: {}\nКонфигурация: {}\n'.format(log_file, cfg_file))  # Название графика

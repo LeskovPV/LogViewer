@@ -8,3 +8,4 @@ from tools.log_viewer import LogViewer
 if __name__ == "__main__":
     # LogGenerator().generate()  # Генерация тестовых данных (см. LogGenerator._gen_value)
     LogViewer().view(**dict(zip(['this_file', 'cfg_file', 'log_file'], sys.argv)))
+

@@ -1,4 +1,6 @@
 # coding=utf-8
+import json
+
 
 class AttrDict(dict):
     """
@@ -40,3 +42,5 @@ class AttrDict(dict):
     def __setitem__(self, key, value):  # self[key] = _value
         self.__setattr__(key, value)
 
+    def get_json_format(self) -> str:
+        return json.dumps(self, indent=4, ensure_ascii = False)

@@ -1,6 +1,8 @@
 # coding=utf-8
+import json
 
 from gui.main_window.main_window import MainWindow
+from utils.plot_widget import AxesData, PlotData, CanvasData
 
 
 def launch_ui(widget_class, **kwargs):
@@ -22,5 +24,4 @@ def launch_ui(widget_class, **kwargs):
 
 
 if __name__ == "__main__":
-
     launch_ui(widget_class=MainWindow)

@@ -1,3 +1,4 @@
+import asyncio
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
@@ -46,11 +47,13 @@ class PlotWidget(QWidget):
         axes_label = 14,  # для меток координатных осей
     )
 
+
     def __init__(self,
                  parent: QWidget = None,
                  canvas_data: CanvasData = None,
                  dpi: int = 100):
         super().__init__(parent=parent)
+        self.index = 0
         self.figure = Figure(figsize=(parent.size().width(), parent.size().height()), dpi=dpi)
         if isinstance(parent, QWidget):
             (QVBoxLayout(parent) if parent.layout() is None else parent.layout()).addWidget(self)
@@ -81,6 +84,7 @@ class PlotWidget(QWidget):
             for plot in axes.plots:
                 if plot.by_right_scale and twinx_axes is None:
                     twinx_axes = self.axes.twinx()
+                    twinx_axes.plot([])
                 current_axes = twinx_axes if plot.by_right_scale else self.axes
                 # title = plot_data.axeses[axes_id].y_right_title if plot.by_right_scale else plot_data.axeses[axes_id].y_title
                 # current_axes.scatter(axes.x_data, plot.y_data, label=plot.title, color='red')
@@ -92,7 +96,7 @@ class PlotWidget(QWidget):
             # self.axes.scatter(x, y1, c="red", label="y1 = 4*x")
             # self.axes.plot(x, y2, label="y2 = x^2")
 
-            self.axes.legend()  # Вывод легенды
+            #self.axes.legend()  # Вывод легенды
             self.axes.xaxis.set_minor_locator(AutoMinorLocator())  # Минорные насечки на оси X
             self.axes.yaxis.set_minor_locator(AutoMinorLocator())  # Минорные насечки на оси Y
             # self.axes.tick_params(which='major', length=10, width=2)  # Мажорные насечки на оси
@@ -108,3 +112,4 @@ class PlotWidget(QWidget):
         #     if isinstance(c, FigureCanvasQTAgg):
         #         self.plot_widget.
         self.plot_layout.addWidget(_figure_canvas)
+
